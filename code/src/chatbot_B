@@ -1,0 +1,23 @@
+import streamlit as st
+from transformers import pipeline
+import psycopg2
+from datetime import datetime
+
+
+# Title of the web app
+st.title("🤖 AI Chatbot with Hugging Face")
+
+# Load the chatbot model (cache to avoid reloading)
+@st.cache_resource
+def load_chatbot():
+    return pipeline("text-generation", model="facebook/blenderbot-400M-distill")
+
+chatbot = load_chatbot()
+
+# Input text box
+user_input = st.text_input("You:", "")
+
+# If user enters text, generate a response
+if user_input:
+    response = chatbot(user_input, max_length=100, do_sample=True)
+    st.write("🤖 Chatbot:", response[0]["generated_text"])
